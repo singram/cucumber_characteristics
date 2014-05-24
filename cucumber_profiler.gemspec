@@ -7,10 +7,10 @@ Gem::Specification.new do |spec|
   spec.name          = "cucumber_profiler"
   spec.version       = CucumberProfiler::VERSION
   spec.authors       = ["Stuart Ingram"]
-  spec.email         = ["ingrams2@upmc.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
-  spec.homepage      = ""
+  spec.email         = ["stuart.ingram@gmail.com"]
+  spec.description   = %q{Gem to profile cucumber steps and features}
+  spec.summary       = %q{Gem to profile cucumber steps and features}
+  spec.homepage      = "https://github.com/singram/cucumber_profiler"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)

@@ -1,6 +1,6 @@
 # CucumberProfiler
 
-TODO: Write a gem description
+Gem to profile cucumber steps and features
 
 ## Installation
 
