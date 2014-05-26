@@ -41,12 +41,14 @@ Running
 
     cucumber --format debug features/outline.feature
 
-Notice a couple of items
+A couple of problems become evident
+
 1. There are step definitions walked prior to the examples_array.  These steps are not invoked rendering these hooks points misleading for profiling purposes
-2. There are only 3 table_cell element blocks. These can be profiled but what about the last step that does not have an input from the examples?
+2. There are only 3 table_cell element blocks. These can be profiled, but what about the last step that does not have an input from the examples?
 
 Possible solutions
-1. Introduce new hook point for step invokations
+
+1. Introduce new hook point for all true step invokations irregardless of context.
 2. Adjust table_cell hooks to include 'null' cells when considering steps without definitions.
 3. Include profile information in runtime master object to parse out at end.
 
