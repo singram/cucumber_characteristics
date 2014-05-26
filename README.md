@@ -20,6 +20,36 @@ Or install it yourself as:
 
 TODO: Write usage instructions here
 
+## Problem
+
+The formatting hooks on the face of it provide the necessary event points to profile any given feature file.
+This is true for a Scenario, but consider the following ScenaioOutline
+
+    Feature: As a user I want to understand where my tests are spending their time
+
+      Scenario Outline: Timings for scenario outline
+        Given I wait <given_wait> seconds
+        When  I wait <when_wait> seconds
+        Then  I wait <then_wait> seconds
+        And   I wait 0.2 seconds
+        Examples:
+        | given_wait | when_wait | then_wait |
+        |          1 |         2 |         3 |
+        |          5 |         6 |         7 |
+
+Running
+
+    cucumber --format debug features/outline.feature
+
+Notice a couple of items
+1. There are step definitions walked prior to the examples_array.  These steps are not invoked rendering these hooks points misleading for profiling purposes
+2. There are only 3 table_cell element blocks. These can be profiled but what about the last step that does not have an input from the examples?
+
+Possible solutions
+1. Introduce new hook point for step invokations
+2. Adjust table_cell hooks to include 'null' cells when considering steps without definitions.
+3. Include profile information in runtime master object to parse out at end.
+
 ## Contributing
 
 1. Fork it
