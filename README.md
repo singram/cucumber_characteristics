@@ -46,6 +46,8 @@ A couple of problems become evident
 1. There are step definitions walked prior to the examples_array.  These steps are not invoked rendering these hooks points misleading for profiling purposes
 2. There are only 3 table_cell element blocks. These can be profiled, but what about the last step that does not have an input from the examples?
 
+This is why when you use the 'progress' formatter you would get 4 'skipped' for the initial step hooks and then only 6 green dots representing steps when there should be 8 as it key's off table cells not steps.
+
 Possible solutions
 
 1. Introduce new hook point for all true step invokations irregardless of context.
