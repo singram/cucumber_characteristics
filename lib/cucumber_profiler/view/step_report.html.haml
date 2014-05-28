@@ -1,0 +1,106 @@
+!!!
+%html{:lang => "en"}
+  %head
+    %meta{:charset => "utf-8"}/
+    %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
+    %meta{:content => "width=device-width, initial-scale=1", :name => "viewport"}/
+    %meta{:content => "Cucumber Step Profiler", :name => "description"}/
+    %title Cucumber Step Profile
+    %link{:href => "http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css", :rel => "stylesheet"}/
+    %link{:href => "http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css", :rel => "stylesheet"}/
+    / Custom styles for this layout
+    :css
+      body {
+          min-height: 2000px;
+          padding-top: 70px;
+      }
+
+      td {
+          white-space: nowrap;
+      }
+
+      table.tablesorter thead tr .headerSortUp {
+        background-color: #8dbdd8;
+      }
+      table.tablesorter thead tr .headerSortDown {
+        background-color: #8dbdd8;
+      }
+    / HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries
+    /[if lt IE 9]
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+  %body
+    .container
+      .page-header
+        %h1 Cucumber step profile
+      .alert.alert-info
+        %span
+          #{profile.scenarios.count} Scenarios,
+          #{profile.steps.count} Steps completed
+          %span.text-muted
+            (#{step_status_summary(profile)})
+          <br>
+          Test duration #{format_ts(profile.duration)}s.
+          %span.text-muted
+            (#{format_ts(profile.step_duration)}s steps, #{format_ts(profile.nonstep_duration)}s non-steps)
+        %span.text-muted.pull-right.small
+          Finished on #{Time.now}
+
+      %table.table.table-striped.table-bordered.table-condensed.tablesorter#profile_table
+        %thead
+          %tr
+            %th Step
+            %th Total time
+            %th Passed
+            %th Average
+            %th Fastest
+            %th Slowest
+            %th Variation
+            %th Variance
+            %th Std Deviation
+            %th Skipped
+            %th Error
+            %th Undef
+            %th Total count
+        %tbody
+          - profile.step_profiles.each do |step, meta|
+            %tr
+              %td
+                %abbr{:title => "#{meta[:regexp]}"} #{step}
+              %td #{format_ts(meta[:total_duration])}
+              %td
+                - if meta[:passed][:count] > 0
+                  %abbr{:title => "#{ format_step_usage(meta[:passed]) }" } #{meta[:passed][:count]}
+                - else
+                  0
+              %td #{format_ts(meta[:average])}
+              %td #{format_ts(meta[:fastest])}
+              %td #{format_ts(meta[:slowest])}
+              %td #{format_ts(meta[:variation])}
+              %td #{format_ts(meta[:variance])}
+              %td #{format_ts(meta[:standard_deviation])}
+              %td
+                - if meta[:skipped][:count] > 0
+                  %abbr{:title => "#{ format_step_usage(meta[:skipped]) }" } #{meta[:skipped][:count]}
+                - else
+                  0
+              %td
+                - if meta[:failed][:count] > 0
+                  %abbr{:title => "#{ format_step_usage(meta[:failed]) }" } #{meta[:failed][:count]}
+                - else
+                  0
+              %td
+                - if meta[:undefined][:count] > 0
+                  %abbr{:title => "#{ format_step_usage(meta[:undefined]) }" } #{meta[:undefined][:count]}
+                - else
+                  0
+              %td #{meta[:total_count]}
+    %script{:src => "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"}
+    %script{:src => "http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"}
+    %script{:src => "https://raw.githubusercontent.com/christianbach/tablesorter/master/jquery.tablesorter.min.js"}
+    :javascript
+      $(document).ready(function()
+      {
+          $("#profile_table").tablesorter( {sortList: [[1,1],[3,1]], widgets: ['zebra']} );
+      }
+      );

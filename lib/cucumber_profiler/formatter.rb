@@ -10,6 +10,7 @@ module CucumberProfiler
 
     def after_features(features)
       profile = ProfileData.new(@runtime, features)
+      Exporter.new(profile).export
     end
 
   end
