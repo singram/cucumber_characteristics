@@ -2,6 +2,9 @@ module CucumberProfiler
 
   class ProfileData
 
+    extend Forwardable
+
+    def_delegators :@runtime, :scenarios, :steps
     attr_reader :duration
 
     def initialize(runtime, features)
@@ -20,10 +23,31 @@ module CucumberProfiler
         @step_profiles[step_name][:profile][feature_location] ||= []
         if s.status != :undefined
           @step_profiles[step_name][:regexp] = s.step_match.step_definition.regexp_source
-          @step_profiles[step_name][:profile][feature_location] << s.step_match.duration if s.status != :skipped
+          if s.status == :passed
+            @step_profiles[step_name][:profile][feature_location] << s.step_match.duration
+          end
         end
       end
+      calculations!
       @step_profiles
+    end
+
+    def calculations!
+      @step_profiles.each do |step, meta|
+        @step_profiles.merge(fastest: nil, slowest: nil, average: nil, total_duration: nil, standard_deviation: nil, variation: nil)
+        return unless meta[:profile] && meta[:passed] > 0
+        timings = meta[:profile].values.flatten.compact
+
+        @step_profiles[step][:fastest] = timings.min
+        @step_profiles[step][:slowest] = timings.max
+        @step_profiles[step][:variation] = @step_profiles[step][:slowest] - @step_profiles[step][:fastest]
+        @step_profiles[step][:total_duration] = timings.inject(:+)
+        @step_profiles[step][:average] = @step_profiles[step][:total_duration] / meta[:passed]
+        sum = timings.inject(0){|accum, i| accum +(i-@step_profiles[step][:average])**2 }
+        @step_profiles[step][:variance] = sum/(timings.length ).to_f
+        @step_profiles[step][:standard_deviation] = Math.sqrt( @step_profiles[step][:variance])
+      end
+
     end
 
     def step_duration

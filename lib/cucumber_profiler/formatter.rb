@@ -10,6 +10,7 @@ module CucumberProfiler
 
     def after_features(features)
       profile = ProfileData.new(@runtime, features)
+      Renderer.new(profile).render
     end
 
   end
