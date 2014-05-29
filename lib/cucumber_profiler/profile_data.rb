@@ -60,6 +60,10 @@ module CucumberProfiler
       step_duration.flatten.compact.inject(:+)
     end
 
+    def nonstep_duration
+      duration - step_duration
+    end
+
     def step_count_by_status
       status = {}
       @runtime.steps.each do |s|

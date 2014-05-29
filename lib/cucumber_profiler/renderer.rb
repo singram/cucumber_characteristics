@@ -18,6 +18,17 @@ module CucumberProfiler
       puts "Step report written to #{@config.full_target_filename}"
     end
 
+    # HELPERS
+
+    def format_ts(t)
+      t ? sprintf("%0.4f", t) : '-'
+    end
+
+    def step_status_summary(profile)
+      status = profile.step_count_by_status
+      status.keys.sort.map{|s| status[s]>0 ? "#{s.capitalize}: #{status[s]}" : nil}.compact.join(', ')
+    end
+
    end
 
 end
