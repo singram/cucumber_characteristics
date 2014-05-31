@@ -17,12 +17,6 @@
 
       td {
           white-space: nowrap;
-          /*max-width: 100px;*/
-      }
-      tr td:first-child {
-          overflow: hidden;
-          text-overflow: ellipsis;
-          max-width: 300px;
       }
 
       table.tablesorter thead tr .headerSortUp {
@@ -71,18 +65,35 @@
         %tbody
           - profile.step_profiles.each do |step, meta|
             %tr
-              %td #{step}
+              %td
+                %abbr{:title => "#{meta[:regexp]}"} #{step}
               %td #{format_ts(meta[:total_duration])}
-              %td #{meta[:passed]}
+              %td
+                - if meta[:passed][:count] > 0
+                  %abbr{:title => "#{ format_step_usage(meta[:passed]) }" } #{meta[:passed][:count]}
+                - else
+                  0
               %td #{format_ts(meta[:average])}
               %td #{format_ts(meta[:fastest])}
               %td #{format_ts(meta[:slowest])}
               %td #{format_ts(meta[:variation])}
               %td #{format_ts(meta[:variance])}
               %td #{format_ts(meta[:standard_deviation])}
-              %td #{meta[:skipped]}
-              %td #{meta[:failed]}
-              %td #{meta[:undefined]}
+              %td
+                - if meta[:skipped][:count] > 0
+                  %abbr{:title => "#{ format_step_usage(meta[:skipped]) }" } #{meta[:skipped][:count]}
+                - else
+                  0
+              %td
+                - if meta[:failed][:count] > 0
+                  %abbr{:title => "#{ format_step_usage(meta[:failed]) }" } #{meta[:failed][:count]}
+                - else
+                  0
+              %td
+                - if meta[:undefined][:count] > 0
+                  %abbr{:title => "#{ format_step_usage(meta[:undefined]) }" } #{meta[:undefined][:count]}
+                - else
+                  0
               %td #{meta[:total_count]}
     %script{:src => "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"}
     %script{:src => "http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"}
