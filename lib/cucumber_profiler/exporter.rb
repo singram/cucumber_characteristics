@@ -7,13 +7,19 @@ module CucumberProfiler
     attr_reader :profile
     def initialize(profile)
       @profile = profile
-      @config  = Configuration
+      @config  = CucumberProfiler.configuration
     end
 
     def export
-      File.open(@config.full_target_filename, 'w') { |file| file.write(to_html) }
-      File.open("#{@config.full_target_filename}.json", 'w') { |file| file.write(to_json) }
-      puts "Step report written to #{@config.full_target_filename}"
+      filename = @config.full_target_filename
+      if @config.export_html
+        File.open(filename+'.html', 'w') { |file| file.write(to_html) }
+        puts "Step profile report written to #{filename}.html"
+      end
+      if @config.export_json
+        File.open(filename+'.json', 'w') { |file| file.write(to_json) }
+        puts "Step profile report written to #{filename}.json"
+      end
     end
 
     def to_html
