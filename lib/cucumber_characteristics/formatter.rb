@@ -1,4 +1,4 @@
-module CucumberProfiler
+module CucumberCharacteristics
 
   class Formatter
 

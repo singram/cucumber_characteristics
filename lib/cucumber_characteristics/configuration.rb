@@ -1,4 +1,4 @@
-module CucumberProfiler
+module CucumberCharacteristics
 
   class Configuration
 
@@ -7,8 +7,8 @@ module CucumberProfiler
     def initialize
       @export_json = true
       @export_html = true
-      @target_filename =  'cucumber_step_profile'
-      @relative_path =  'features/profile'
+      @target_filename =  'cucumber_step_characteristics'
+      @relative_path =  'features/characteristics'
     end
 
     def full_target_filename

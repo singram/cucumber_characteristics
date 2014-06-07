@@ -1,4 +1,4 @@
-# CucumberProfiler
+# CucumberCharacteristics
 
 Gem to profile cucumber steps and features
 
@@ -6,7 +6,7 @@ Gem to profile cucumber steps and features
 
 Add this line to your application's Gemfile:
 
-    gem 'cucumber_profiler'
+    gem 'cucumber_characteristics'
 
 And then execute:
 
@@ -14,35 +14,35 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install cucumber_profiler
+    $ gem install cucumber_characteristics
 
 ## Usage
 
-1. For always-on automatic loading (recommended), add `require 'cucumber_profile/autoload'` to `features/support/yourapp_env.rb`.  It is recommended by cucumber that you do not enhance features/support/env.rb so that upgrades are painless (relatively)
+1. For always-on automatic loading (recommended), add `require 'cucumber_characteristics/autoload'` to `features/support/yourapp_env.rb`.  It is recommended by cucumber that you do not enhance features/support/env.rb so that upgrades are painless (relatively)
 
-2. Add it to your `cucumber.yml` by adding `--format CucumberProfiler::Formatter` i.e.
+2. Add it to your `cucumber.yml` by adding `--format CucumberCharacteristics::Formatter` i.e.
 
-    `std_opts = "-r features/. -r --quiet --format CucumberProfiler::Formatter --format progress"`
+    `std_opts = "-r features/. -r --quiet --format CucumberCharacteristics::Formatter --format progress"`
 
-3. Use it via command line with `--format CucumberProfiler::Formatter`.
+3. Use it via command line with `--format CucumberCharacteristics::Formatter`.
 
 ## Configuration
 
-You can configure the export of step profile via the following (defaults are same as example)
+You can configure the export of step characteristics via the following (defaults are same as example)
 
-    CucumberProfiler.configure do |config|
+    CucumberCharacteristics.configure do |config|
       config.export_json = true
       config.export_html = true
-      config.target_filename =  'cucumber_step_profile'
-      config.relative_path =  'features/profile'
+      config.target_filename =  'cucumber_step_characteristics'
+      config.relative_path =  'features/characteristics'
     end
 
 ## Results
 
-Exported profile information is listed out at the end of the cucumber run in a message similar to
+Exported characteristic information is listed out at the end of the cucumber run in a message similar to
 
-    Step profile report written to /home/singram/projects/gems/cucumber_profiler/features/profile/cucumber_step_profile.html
-    Step profile report written to /home/singram/projects/gems/cucumber_profiler/features/profile/cucumber_step_profile.json
+    Step characteristic report written to /home/singram/projects/gems/cucumber_characteristics/features/characteristics/cucumber_step_characteristics.html
+    Step characteristic report written to /home/singram/projects/gems/cucumber_characteristics/features/characteristics/cucumber_step_characteristics.json
 
 depending on the options specified.
 
