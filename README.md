@@ -48,6 +48,8 @@ depending on the options specified.
 
 The JSON option is provided for convenience in case there is a further use case/analysis required that is not provided by the gem.
 
+An example can be found [here](features/characteristics/cucumber_step_characteristics.html)
+
 ## Problem
 
 The formatting hooks on the face of it provide the necessary event points to profile any given feature file.
