@@ -2,14 +2,16 @@
 
 module Cucumber
   class StepMatch
-    old_invoke = instance_method(:invoke)
-    attr_reader :duration
+    if self.method_defined?(:invoke)
+      old_invoke = instance_method(:invoke)
+      attr_reader :duration
 
-    define_method(:invoke) do | multiline_arg |
-      start_time = Time.now
-      ret = old_invoke.bind(self).(multiline_arg)
-      @duration = Time.now - start_time
-      ret
+      define_method(:invoke) do | multiline_arg |
+        start_time = Time.now
+        ret = old_invoke.bind(self).(multiline_arg)
+        @duration = Time.now - start_time
+        ret
+      end
     end
   end
 end
