@@ -38,8 +38,9 @@
           #{profile.scenarios.count} Scenarios,
           #{profile.steps.count} Steps completed
           %span.text-muted
-            (#{step_status_summary(profile)})
-          <br>
+            (#{step_status_summary(profile)})<br>
+          - if profile.ambiguous_count > 0
+            #{profile.ambiguous_count}/#{profile.step_count(:failed)} failures due to ambiguous matches<br>
           Test duration #{format_ts(profile.duration)}s.
           %span.text-muted
             (#{format_ts(profile.step_duration)}s steps, #{format_ts(profile.nonstep_duration)}s non-steps)

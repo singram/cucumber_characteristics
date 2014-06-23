@@ -14,26 +14,35 @@ module CucumberCharacteristics
       @duration = features.duration
     end
 
+    def ambiguous_count
+      @runtime.steps.count{|s| ambiguous?(s)}
+    end
+
     def step_profiles
-      #return @step_profiles if @step_profiles
       step_profiles = {}
       @runtime.steps.each do |s|
-        step_name = s.status == :undefined ? s.name : s.step_match.step_definition.file_colon_line
-        # Initialize data structure
-        step_profiles[step_name] ||= { :total_count => 0}
-        STATUS.each {|status| step_profiles[step_name][status] ||= {:count => 0, :feature_location => {} }}
-        feature_location = s.file_colon_line
-        step_profiles[step_name][s.status][:count] += 1
-        step_profiles[step_name][:total_count] += 1
-        step_profiles[step_name][s.status][:feature_location][feature_location] ||= []
-        if s.status != :undefined
-          step_profiles[step_name][:regexp] = s.step_match.step_definition.regexp_source
-          if s.status == :passed
-            step_profiles[step_name][s.status][:feature_location][feature_location] << s.step_match.duration
+        unless ambiguous?(s)
+          step_name = s.status == :undefined ? s.name : s.step_match.step_definition.file_colon_line
+          # Initialize data structure
+          step_profiles[step_name] ||= { :total_count => 0}
+          STATUS.each {|status| step_profiles[step_name][status] ||= {:count => 0, :feature_location => {} }}
+          feature_location = s.file_colon_line
+          step_profiles[step_name][s.status][:count] += 1
+          step_profiles[step_name][:total_count] += 1
+          step_profiles[step_name][s.status][:feature_location][feature_location] ||= []
+          if s.status != :undefined
+            step_profiles[step_name][:regexp] = s.step_match.step_definition.regexp_source
+            if s.status == :passed
+              step_profiles[step_name][s.status][:feature_location][feature_location] << s.step_match.duration
+            end
           end
         end
       end
       with_calculations(step_profiles)
+    end
+
+    def ambiguous?(step)
+      step.status == :failed && step.step_match.step_definition.nil?
     end
 
     def with_calculations(step_profiles)
@@ -83,6 +92,10 @@ module CucumberCharacteristics
       status
     end
 
+    def step_count(status)
+      step_count_by_status[status]
+    end
+
     def scenario_count_by_status
       status = {}
       @runtime.scenarios.each do |s|
@@ -93,6 +106,5 @@ module CucumberCharacteristics
     end
 
   end
-
 
 end
