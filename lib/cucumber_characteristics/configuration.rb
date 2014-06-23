@@ -2,11 +2,12 @@ module CucumberCharacteristics
 
   class Configuration
 
-    attr_accessor :export_json, :export_html, :target_filename, :relative_path
+    attr_accessor :export_json, :export_html, :target_filename, :relative_path, :precision
 
     def initialize
       @export_json = true
       @export_html = true
+      @precision = 4
       @target_filename =  'cucumber_step_characteristics'
       @relative_path =  'features/characteristics'
     end

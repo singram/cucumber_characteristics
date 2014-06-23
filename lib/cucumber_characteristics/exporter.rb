@@ -35,7 +35,7 @@ module CucumberCharacteristics
     # HELPERS
 
     def format_ts(t)
-      t ? sprintf("%0.4f", t) : '-'
+      t ? sprintf("%0.#{@config.precision}f", t) : '-'
     end
 
     def format_step_usage(step_feature_data)
