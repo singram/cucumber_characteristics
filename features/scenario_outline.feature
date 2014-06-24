@@ -8,4 +8,4 @@ Feature: As a user I want to understand where my tests are spending their time i
     Examples:
     | given_wait | when_wait | then_wait |
     |        0.1 |       0.2 |       0.3 |
-    |        0.5 |       0.6 |       0.7 |
+    |        0.3 |       0.2 |       0.1 |

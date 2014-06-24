@@ -9,13 +9,89 @@ module CucumberCharacteristics
 
     STATUS = [:passed, :failed, :skipped, :undefined ]
 
+    require 'pp'
+
     def initialize(runtime, features)
       @runtime = runtime
       @duration = features.duration
+      @features = features
+      feature_profiles
     end
 
     def ambiguous_count
       @runtime.steps.count{|s| ambiguous?(s)}
+    end
+
+    def feature_profiles
+#       feature_profiles = { }
+#       # @runtime.steps.each do |s|
+#       #   unless ambiguous?(s)
+#       #     step_name = s.status == :undefined ? s.name : s.step_match.step_definition.file_colon_line
+#       #     # Initialize data structure
+#       #     step_profiles[step_name] ||= { :total_count => 0}
+#       #     STATUS.each {|status| step_profiles[step_name][status] ||= {:count => 0, :feature_location => {} }}
+#       #     feature_location = s.file_colon_line
+#       #     step_profiles[step_name][s.status][:count] += 1
+#       #     step_profiles[step_name][:total_count] += 1
+#       #     step_profiles[step_name][s.status][:feature_location][feature_location] ||= []
+#       #     if s.status != :undefined
+#       #       step_profiles[step_name][:regexp] = s.step_match.step_definition.regexp_source
+#       #       if s.status == :passed
+#       #         step_profiles[step_name][s.status][:feature_location][feature_location] << s.step_match.duration
+#       #       end
+#       #     end
+#       #   end
+#       #   pp s.methods.sort
+#       # end
+#       #      pp @runtime.methods.sort
+
+#       @features.each do |f|
+#         f.feature_elements.each do |fe|
+#           pp fe.class.name
+#         end
+#       end
+      @runtime.scenarios.each do |f|
+        # #        pp f.methods.sort
+#         pp '---------------'
+        if f.is_a?(Cucumber::Ast::OutlineTable::ExampleRow)
+          pp f.scenario_outline.file_colon_line
+          pp f.scenario_outline.name
+       #   pp f.scenario_outline.example_rows
+          # f.scenario_outline.each_example_row do |ex|
+          #   pp 'XXXX'
+          #   pp ex.class.name
+          #   pp ex.name
+          pp f.name
+            f.step_invocations.each do |s|
+              pp s.step_match.duration
+            end
+  #        end
+        # #          pp f.scenario_outline.methods.sort
+#  #         f.scenario_outline.feature.methods.sort
+#           f.scenario_outline.
+# #            e.methods.sort
+#    #       end
+# #          pp f.methods.sort
+# #          pp f.name
+# #          pp f.scenario_outline.step_invocations.each {|x| pp x}
+        else
+          pp f.file_colon_line
+          pp f.name
+          # #          pp f.steps.each {|x| pp x.methods.sort}
+          pp f.steps.each {|x| pp x.step_match.duration}
+        end
+#         pp '---------------'
+
+# #         @features.each do |f|
+# #           pp f.name
+# #           pp f.methods.sort
+# #           pp f.feature_elements
+# #           pp f.feature_elements.first.methods.sort
+# # #          pp f.duration
+# #         end
+#  #       feature_profiles[f.name] = {status: f.status, location: f.name, duration: f.duration}
+      end
+#       feature_profiles
     end
 
     def step_profiles

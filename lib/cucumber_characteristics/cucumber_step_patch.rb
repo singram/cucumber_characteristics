@@ -22,5 +22,11 @@ module Cucumber
     class StepInvocation
       attr_reader :step_match
     end
+
+    class OutlineTable
+      class ExampleRow
+        attr_reader :step_invocations
+      end
+    end
   end
 end
