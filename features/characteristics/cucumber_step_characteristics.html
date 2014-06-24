@@ -39,66 +39,96 @@
       </div>
       <div class='alert alert-info'>
         <span>
-          1 Scenarios,
-          3 Steps completed
+          2 Scenarios,
+          8 Steps completed
           <span class='text-muted'>
-            (Passed: 3)<br>
+            (Passed: 8)<br>
           </span>
-          Test duration 1.5051s.
+          Test duration 1.6176s.
           <span class='text-muted'>
-            (1.5041s steps, 0.0010s non-steps)
+            (1.6070s steps, 0.0107s non-steps)
           </span>
         </span>
         <span class='text-muted pull-right small'>
-          Finished on 2014-06-23 21:11:31 -0400
+          Finished on 2014-06-23 22:19:26 -0400
         </span>
       </div>
-      <table class='table table-striped table-bordered table-condensed tablesorter' id='profile_table'>
-        <thead>
-          <tr>
-            <th>Step</th>
-            <th>Total time</th>
-            <th>Passed</th>
-            <th>Average</th>
-            <th>Fastest</th>
-            <th>Slowest</th>
-            <th>Variation</th>
-            <th>Variance</th>
-            <th>Std Deviation</th>
-            <th>Skipped</th>
-            <th>Error</th>
-            <th>Undef</th>
-            <th>Total count</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <abbr title='/^I wait ([\d\.]+) seconds$/'>features/step_definitions/wait_steps.rb:1</abbr>
-            </td>
-            <td>1.5041</td>
-            <td>
-              <abbr title='features/scenario.feature:4&#x000A;features/scenario.feature:5&#x000A;features/scenario.feature:6'>3</abbr>
-            </td>
-            <td>0.5014</td>
-            <td>0.5014</td>
-            <td>0.5014</td>
-            <td>0.0000</td>
-            <td>0.0000</td>
-            <td>0.0000</td>
-            <td>
-              0
-            </td>
-            <td>
-              0
-            </td>
-            <td>
-              0
-            </td>
-            <td>3</td>
-          </tr>
-        </tbody>
-      </table>
+      <ul class='nav nav-tabs'>
+        <li class='active'>
+          <a data-toggle='tab' href='#steps'>Steps</a>
+        </li>
+        <li>
+          <a data-toggle='tab' href='#features'>Features</a>
+        </li>
+      </ul>
+      <div class='tab-content'>
+        <div class='tab-pane' id='steps'>
+          <table class='table table-striped table-bordered table-condensed tablesorter' id='profile_table'>
+            <thead>
+              <tr>
+                <th>Step</th>
+                <th>Total time</th>
+                <th>Passed</th>
+                <th>Average</th>
+                <th>Fastest</th>
+                <th>Slowest</th>
+                <th>Variation</th>
+                <th>Variance</th>
+                <th>Std Deviation</th>
+                <th>Skipped</th>
+                <th>Error</th>
+                <th>Undef</th>
+                <th>Total count</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <abbr title='/^I wait ([\d\.]+) seconds$/'>features/step_definitions/wait_steps.rb:1</abbr>
+                </td>
+                <td>1.6070</td>
+                <td>
+                  <abbr title='features/scenario_outline.feature:4 (x2)&#x000A;features/scenario_outline.feature:5 (x2)&#x000A;features/scenario_outline.feature:6 (x2)&#x000A;features/scenario_outline.feature:7 (x2)'>8</abbr>
+                </td>
+                <td>0.2009</td>
+                <td>0.1006</td>
+                <td>0.3013</td>
+                <td>0.2007</td>
+                <td>0.0050</td>
+                <td>0.0710</td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>8</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class='tab-pane' id='features'>
+          <table class='table table-striped table-bordered table-condensed' id='feature_table'>
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>Total time</th>
+                <th>Step count</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>features/scenario_outline.feature:3</td>
+                <td>1.6070</td>
+                <td>8</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js'></script>
     <script src='http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'></script>
