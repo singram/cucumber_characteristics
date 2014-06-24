@@ -47,55 +47,79 @@
         %span.text-muted.pull-right.small
           Finished on #{Time.now}
 
-      %table.table.table-striped.table-bordered.table-condensed.tablesorter#profile_table
-        %thead
-          %tr
-            %th Step
-            %th Total time
-            %th Passed
-            %th Average
-            %th Fastest
-            %th Slowest
-            %th Variation
-            %th Variance
-            %th Std Deviation
-            %th Skipped
-            %th Error
-            %th Undef
-            %th Total count
-        %tbody
-          - profile.step_profiles.each do |step, meta|
-            %tr
-              %td
-                %abbr{:title => "#{meta[:regexp]}"} #{step}
-              %td #{format_ts(meta[:total_duration])}
-              %td
-                - if meta[:passed][:count] > 0
-                  %abbr{:title => "#{ format_step_usage(meta[:passed]) }" } #{meta[:passed][:count]}
-                - else
-                  0
-              %td #{format_ts(meta[:average])}
-              %td #{format_ts(meta[:fastest])}
-              %td #{format_ts(meta[:slowest])}
-              %td #{format_ts(meta[:variation])}
-              %td #{format_ts(meta[:variance])}
-              %td #{format_ts(meta[:standard_deviation])}
-              %td
-                - if meta[:skipped][:count] > 0
-                  %abbr{:title => "#{ format_step_usage(meta[:skipped]) }" } #{meta[:skipped][:count]}
-                - else
-                  0
-              %td
-                - if meta[:failed][:count] > 0
-                  %abbr{:title => "#{ format_step_usage(meta[:failed]) }" } #{meta[:failed][:count]}
-                - else
-                  0
-              %td
-                - if meta[:undefined][:count] > 0
-                  %abbr{:title => "#{ format_step_usage(meta[:undefined]) }" } #{meta[:undefined][:count]}
-                - else
-                  0
-              %td #{meta[:total_count]}
+      %ul.nav.nav-tabs
+        %li.active
+          %a{:href => '#steps', :'data-toggle' => 'tab'} Steps
+        %li
+          %a{:href => '#features', :'data-toggle' => 'tab'} Features
+      %div.tab-content
+        %div.tab-pane.active#steps
+          %table.table.table-striped.table-bordered.table-condensed.tablesorter#profile_table
+            %thead
+              %tr
+                %th Step
+                %th Total time
+                %th Passed
+                %th Average
+                %th Fastest
+                %th Slowest
+                %th Variation
+                %th Variance
+                %th Std Deviation
+                %th Skipped
+                %th Error
+                %th Undef
+                %th Total count
+            %tbody
+              - profile.step_profiles.each do |step, meta|
+                %tr
+                  %td
+                    %abbr{:title => "#{meta[:regexp]}"} #{step}
+                  %td #{format_ts(meta[:total_duration])}
+                  %td
+                    - if meta[:passed][:count] > 0
+                      %abbr{:title => "#{ format_step_usage(meta[:passed]) }" } #{meta[:passed][:count]}
+                    - else
+                      0
+                  %td #{format_ts(meta[:average])}
+                  %td #{format_ts(meta[:fastest])}
+                  %td #{format_ts(meta[:slowest])}
+                  %td #{format_ts(meta[:variation])}
+                  %td #{format_ts(meta[:variance])}
+                  %td #{format_ts(meta[:standard_deviation])}
+                  %td
+                    - if meta[:skipped][:count] > 0
+                      %abbr{:title => "#{ format_step_usage(meta[:skipped]) }" } #{meta[:skipped][:count]}
+                    - else
+                      0
+                  %td
+                    - if meta[:failed][:count] > 0
+                      %abbr{:title => "#{ format_step_usage(meta[:failed]) }" } #{meta[:failed][:count]}
+                    - else
+                      0
+                  %td
+                    - if meta[:undefined][:count] > 0
+                      %abbr{:title => "#{ format_step_usage(meta[:undefined]) }" } #{meta[:undefined][:count]}
+                    - else
+                      0
+                  %td #{meta[:total_count]}
+
+        %div.tab-pane#features
+          %table.table.table-striped.table-bordered.table-condensed#feature_table
+            %thead
+              %tr
+                %th Feature
+                %th Total time
+                %th Step count
+                %th Status
+            %tbody
+              - profile.feature_profiles.each do |feature, meta|
+                %tr{:class => "#{meta[:status] == :failed ? :danger : meta[:status] == :undefined ? :warning : nil }"}
+                  %td #{feature}
+                  %td #{format_ts(meta[:total_duration])}
+                  %td #{meta[:step_count]}
+                  %td #{meta[:status]}
+
     %script{:src => "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"}
     %script{:src => "http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"}
     %script{:src => "https://raw.githubusercontent.com/christianbach/tablesorter/master/jquery.tablesorter.min.js"}

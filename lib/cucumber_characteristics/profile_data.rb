@@ -9,13 +9,50 @@ module CucumberCharacteristics
 
     STATUS = [:passed, :failed, :skipped, :undefined ]
 
+    require 'pp'
+
     def initialize(runtime, features)
       @runtime = runtime
       @duration = features.duration
+      @features = features
+      pp feature_profiles
     end
 
     def ambiguous_count
       @runtime.steps.count{|s| ambiguous?(s)}
+    end
+
+    def feature_profiles
+      feature_profiles = { }
+      @runtime.scenarios.each do |f|
+        if f.is_a?(Cucumber::Ast::OutlineTable::ExampleRow)
+          feature_id = f.scenario_outline.file_colon_line
+          feature_profiles[feature_id] ||= {name: f.scenario_outline.name, total_duration: 0, step_count: 0, example_count: 0, examples: {} }
+          example_id = f.name
+          feature_profiles[feature_id][:examples][example_id] ||= {total_duration: 0, step_count: 0}
+          feature_profiles[feature_id][:examples][example_id][:total_duration] = f.step_invocations.select{|s| s.status == :passed}.map{|s| s.step_match.duration}.inject(&:+)
+          feature_profiles[feature_id][:examples][example_id][:step_count] = f.step_invocations.count
+          feature_profiles[feature_id][:examples][example_id][:status] = f.status
+        else
+          feature_id = f.file_colon_line
+          feature_profiles[feature_id] = {name: f.name, total_duration: 0, step_count: 0}
+          feature_profiles[feature_id][:total_duration] = f.steps.select{|s| s.status == :passed}.map{|s| s.step_match.duration}.inject(&:+)
+          feature_profiles[feature_id][:step_count] = f.steps.count
+          feature_profiles[feature_id][:status] = f.status
+        end
+      end
+      with_feature_calculations(feature_profiles)
+    end
+
+    def with_feature_calculations(feature_profiles)
+      feature_profiles.each do |feature, meta|
+        if meta[:examples]
+          feature_profiles[feature][:example_count] = meta[:examples].keys.count
+          feature_profiles[feature][:total_duration] = meta[:examples].map{|e,m| m[:total_duration]}.inject(&:+)
+          feature_profiles[feature][:step_count] = meta[:examples].map{|e,m| m[:step_count]}.inject(&:+)
+        end
+      end
+      feature_profiles
     end
 
     def step_profiles
@@ -38,14 +75,14 @@ module CucumberCharacteristics
           end
         end
       end
-      with_calculations(step_profiles)
+      with_step_calculations(step_profiles)
     end
 
     def ambiguous?(step)
       step.status == :failed && step.step_match.step_definition.nil?
     end
 
-    def with_calculations(step_profiles)
+    def with_step_calculations(step_profiles)
       step_profiles.each do |step, meta|
         meta.merge!(fastest: nil, slowest: nil, average: nil, total_duration: nil, standard_deviation: nil, variation: nil)
         next unless meta[:passed][:count] > 0
