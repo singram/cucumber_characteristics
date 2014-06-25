@@ -112,6 +112,7 @@
                 %th Total time
                 %th Step count
                 %th Status
+                %th
             %tbody
               - profile.feature_profiles.each do |feature, meta|
                 %tr{:class => "#{meta[:status] == :failed ? :danger : meta[:status] == :undefined ? :warning : nil }"}
@@ -119,6 +120,29 @@
                   %td #{format_ts(meta[:total_duration])}
                   %td #{meta[:step_count]}
                   %td #{meta[:status]}
+                  %td
+                    - if meta[:examples]
+                      %button.btn.btn-primary{:'data-toggle'=>'modal', :'data-target'=>"#{Digest::MD5.hexdigest(feature)}"}
+                        #{meta[:example_count]} Examples
+
+          - profile.feature_profiles.select{|f,m| m.key?(:examples) }.each do |feature, meta|
+            %div{ :class=> 'modal.fade.bs-example-modal-lg', :tabindex=>"-1", :role=>"dialog", :'aria-labelledby'=>"myLargeModalLabel", :'aria-hidden'=>"true", :id => "#{Digest::MD5.hexdigest(feature)}"}
+              %div.modal-dialog.modal-lg
+                %div.modal-content
+                  %table.table.table-striped.table-bordered.table-condensed.tablesorter#profile_table
+                    %thead
+                      %tr
+                        %th Example
+                        %th Total time
+                        %th Step count
+                        %th Status
+                    %tbody
+                      - meta[:examples].each do |example, meta|
+                        %tr{:class => "#{meta[:status] == :failed ? :danger : meta[:status] == :undefined ? :warning : nil }"}
+                          %td #{example}
+                          %td #{format_ts(meta[:total_duration])}
+                          %td #{meta[:step_count]}
+                          %td #{meta[:status]}
 
     %script{:src => "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"}
     %script{:src => "http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"}
