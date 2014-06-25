@@ -52,6 +52,8 @@
           %a{:href => '#steps', :'data-toggle' => 'tab'} Steps
         %li
           %a{:href => '#features', :'data-toggle' => 'tab'} Features
+        %li
+          %a{:href => '#unused_steps', :'data-toggle' => 'tab'} Unused Steps (#{profile.unmatched_steps.count})
       %div.tab-content
         %div.tab-pane.active#steps
           %table.table.table-striped.table-bordered.table-condensed.tablesorter#profile_table
@@ -149,6 +151,18 @@
                   %div.modal-footer
                     %button.btn.btn-default{:type=>"button", :'data-dismiss'=>"modal"}
                       Close
+
+        %div.tab-pane#unused_steps
+          %table.table.table-striped.table-bordered.table-condensed.tablesorter#profile_table
+            %thead
+              %tr
+                %th Step Location
+                %th Step
+            %tbody
+              - profile.unmatched_steps.each do |step_location, step|
+                %tr
+                  %td #{step_location}
+                  %td #{step}
 
     %script{:src => "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"}
     %script{:src => "http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"}
