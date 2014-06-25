@@ -7,15 +7,14 @@ module CucumberCharacteristics
     def_delegators :@runtime, :scenarios, :steps
     attr_reader :duration
 
-    STATUS = [:passed, :failed, :skipped, :undefined ]
+    STATUS_ORDER = {passed: 0, failed: 2000, skipped: 1000, undefined: 500}
 
-    require 'pp'
+    STATUS = STATUS_ORDER.keys
 
     def initialize(runtime, features)
       @runtime = runtime
       @duration = features.duration
       @features = features
-      pp feature_profiles
     end
 
     def ambiguous_count
@@ -50,9 +49,19 @@ module CucumberCharacteristics
           feature_profiles[feature][:example_count] = meta[:examples].keys.count
           feature_profiles[feature][:total_duration] = meta[:examples].map{|e,m| m[:total_duration]}.inject(&:+)
           feature_profiles[feature][:step_count] = meta[:examples].map{|e,m| m[:step_count]}.inject(&:+)
+          feature_profiles[feature][:examples] = feature_profiles[feature][:examples].sort_by{|k, v| v[:total_duration]}.reverse
+          feature_profiles[feature][:status] = if meta[:examples].all?{|e,m| m[:status] == :passed}
+                                                 :passed
+                                               elsif meta[:examples].any?{|e,m| m[:status] == :failed}
+                                                 :failed
+                                               elsif meta[:examples].any?{|e,m| m[:status] == :skipped}
+                                                 :skipped
+                                               else
+                                                 :unknown
+                                               end
         end
       end
-      feature_profiles
+      feature_profiles.sort_by{|k, v| (STATUS_ORDER[v[:status]]||0)+(v[:total_duration] || 0)}.reverse
     end
 
     def step_profiles
@@ -101,7 +110,7 @@ module CucumberCharacteristics
         step_profiles[step][:variance] = sum/(timings.length ).to_f
         step_profiles[step][:standard_deviation] = Math.sqrt( step_profiles[step][:variance])
       end
-      step_profiles
+      step_profiles.sort_by{|k, v| v[:total_duration]||0}.reverse
     end
 
     def step_duration
