@@ -30,8 +30,6 @@ module CucumberCharacteristics
     def after_features(features)
       profile = ProfileData.new(@runtime, features)
       Exporter.new(profile).export
-      require 'pp'
-      pp @features
     end
 
   end

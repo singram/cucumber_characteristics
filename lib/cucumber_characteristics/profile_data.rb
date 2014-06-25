@@ -21,6 +21,18 @@ module CucumberCharacteristics
       @runtime.steps.count{|s| ambiguous?(s)}
     end
 
+    def unmatched_steps
+      unmatched = {}
+      @runtime.unmatched_step_definitions.each do |u|
+        unmatched[u.file_colon_line] = u.regexp_source
+      end
+      unmatched.sort
+    end
+
+    def has_unmatched_steps?
+      unmatched_steps.count > 0
+    end
+
     def feature_profiles
       feature_profiles = { }
       @runtime.scenarios.each do |f|
