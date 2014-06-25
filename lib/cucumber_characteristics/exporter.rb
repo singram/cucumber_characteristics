@@ -1,4 +1,5 @@
 require 'haml'
+require 'digest/md5'
 
 module CucumberCharacteristics
 
