@@ -1,6 +1,27 @@
 # CucumberCharacteristics
 
-Gem to profile cucumber steps and features
+Gem to profile cucumber steps and features.
+
+## High level features
+
+Step analysis including
++ Location of step in steps file & regex
++ Step usage location and number of times executed (background/outline etc)
++ Counts for success/failure/pending/etc
++ Total time taken in test run
++ Average, fastest, slowest times per step
++ Variation, variance & standard deviation calculations
+
+Feature analysis including
++ Feature location
++ Time taken to run feature
++ Result of feature test (pass, fail etc)
++ Number of steps run
++ Breakdown of feature by individual example run if a secario outline
+
+Other features.
++ Reporting of ambiguous step calls
++ Reporting of unused step definitions
 
 ## Installation
 
