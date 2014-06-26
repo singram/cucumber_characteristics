@@ -41,8 +41,8 @@ module CucumberCharacteristics
           feature_profiles[feature_id] ||= {name: f.scenario_outline.name, total_duration: 0, step_count: 0, example_count: 0, examples: {} }
           example_id = f.name
           feature_profiles[feature_id][:examples][example_id] ||= {total_duration: 0, step_count: 0}
-          feature_profiles[feature_id][:examples][example_id][:total_duration] = f.step_invocations.select{|s| s.status == :passed}.map{|s| s.step_match.duration}.inject(&:+)
-          feature_profiles[feature_id][:examples][example_id][:step_count] = f.step_invocations.count
+          feature_profiles[feature_id][:examples][example_id][:total_duration] = f.instance_variable_get(:@step_invocations).select{|s| s.status == :passed}.map{|s| s.step_match.duration}.inject(&:+)
+          feature_profiles[feature_id][:examples][example_id][:step_count] = f.instance_variable_get(:@step_invocations).count
           feature_profiles[feature_id][:examples][example_id][:status] = f.status
         else
           feature_id = f.file_colon_line
