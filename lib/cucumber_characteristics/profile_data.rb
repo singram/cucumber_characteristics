@@ -134,7 +134,7 @@ module CucumberCharacteristics
           end
         end
       end
-      step_duration.flatten.compact.inject(:+)
+      step_duration.flatten.compact.inject(:+) || 0
     end
 
     def nonstep_duration
