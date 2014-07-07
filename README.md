@@ -25,6 +25,8 @@ Other features.
 
 ## Installation
 
+### Step 1
+
 Add this line to your application's Gemfile:
 
     gem 'cucumber_characteristics'
@@ -36,6 +38,13 @@ And then execute:
 Or install it yourself as:
 
     $ gem install cucumber_characteristics
+
+
+### Step 2
+
+Add the following line to your cucumber environment file typically found at `features\support\env.rb`
+
+    require 'cucumber_characteristics/autoload'
 
 ## Usage
 
@@ -58,6 +67,8 @@ You can configure the export of step characteristics via the following (defaults
       config.target_filename =  'cucumber_step_characteristics'
       config.relative_path =  'features/characteristics'
     end
+
+This again can be added to your cucumber environment file typically found at `features\support\env.rb`
 
 ## Results
 
