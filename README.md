@@ -2,6 +2,11 @@
 
 Gem to profile cucumber steps and features.
 
+## Compatibility
+
++ Ruby - 1.9
++ Cucumber - 1.3.5
+
 ## High level features
 
 Step analysis including
@@ -118,6 +123,26 @@ Possible solutions
 3. Include profile information in runtime master object to parse out at end.
 
 As it turns out it was pretty simple to enhance the runtime object to reliably return profile information.
+
+## Developement
+
+1. Install development environment
+
+    bundle install
+
+2. Run formatter over default cucumber version
+
+    bundle exec cucumber
+
+3. Run tests across all supported cucumber versions
+
+    bundle exec rake versions:test
+
+* NOTE.  When running the cucumber tests failures, pending etc are expected.  All specs should pass *
+
+## TODO
+
+- Support Cucumber 2.x
 
 ## Contributing
 
