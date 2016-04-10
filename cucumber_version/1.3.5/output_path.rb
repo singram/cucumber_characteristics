@@ -1,0 +1,1 @@
+CHARACTERISTICS_OUTPUT_PATH_PREFIX="cucumber_version/1.3.5/"

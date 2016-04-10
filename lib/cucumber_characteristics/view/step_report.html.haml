@@ -75,37 +75,37 @@
                 %th Total count
             %tbody
               - profile.step_profiles.each do |step, meta|
-                %tr
-                  %td
+                %tr.step_result
+                  %td.step
                     %abbr{:title => "#{meta[:regexp]}"} #{step}
-                  %td #{format_ts(meta[:total_duration])}
-                  %td
+                  %td.total_time #{format_ts(meta[:total_duration])}
+                  %td.passed_count
                     - if meta[:passed][:count] > 0
                       %abbr{:title => "#{ format_step_usage(meta[:passed]) }" } #{meta[:passed][:count]}
                     - else
                       0
-                  %td #{format_ts(meta[:average])}
-                  %td #{format_ts(meta[:fastest])}
-                  %td #{format_ts(meta[:slowest])}
-                  %td #{format_ts(meta[:variation])}
-                  %td #{format_ts(meta[:variance])}
-                  %td #{format_ts(meta[:standard_deviation])}
-                  %td
+                  %td.average_time #{format_ts(meta[:average])}
+                  %td.fastest_time #{format_ts(meta[:fastest])}
+                  %td.slowest_time #{format_ts(meta[:slowest])}
+                  %td.variation_time #{format_ts(meta[:variation])}
+                  %td.variance_time #{format_ts(meta[:variance])}
+                  %td.std_dev_time #{format_ts(meta[:standard_deviation])}
+                  %td.skipped_count
                     - if meta[:skipped][:count] > 0
                       %abbr{:title => "#{ format_step_usage(meta[:skipped]) }" } #{meta[:skipped][:count]}
                     - else
                       0
-                  %td
+                  %td.failed_count
                     - if meta[:failed][:count] > 0
                       %abbr{:title => "#{ format_step_usage(meta[:failed]) }" } #{meta[:failed][:count]}
                     - else
                       0
-                  %td
+                  %td.undef_count
                     - if meta[:undefined][:count] > 0
                       %abbr{:title => "#{ format_step_usage(meta[:undefined]) }" } #{meta[:undefined][:count]}
                     - else
                       0
-                  %td #{meta[:total_count]}
+                  %td.total_count #{meta[:total_count]}
 
         %div.tab-pane#features
           %table.table.table-striped.table-bordered.table-condensed#feature_table

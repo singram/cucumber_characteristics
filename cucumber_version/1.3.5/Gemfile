@@ -1,0 +1,4 @@
+source 'http://rubygems.org'
+
+gem 'cucumber', '1.3.5', require: true
+gem 'cucumber_characteristics', :path => '../..', require: true
