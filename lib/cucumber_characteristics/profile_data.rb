@@ -59,7 +59,7 @@ module CucumberCharacteristics
       feature_profiles.each do |feature, meta|
         if meta[:examples]
           feature_profiles[feature][:example_count] = meta[:examples].keys.count
-          feature_profiles[feature][:total_duration] = meta[:examples].map{|e,m| m[:total_duration]}.inject(&:+)
+          feature_profiles[feature][:total_duration] = meta[:examples].map{|e,m| m[:total_duration] || 0}.inject(&:+)
           feature_profiles[feature][:step_count] = meta[:examples].map{|e,m| m[:step_count]}.inject(&:+)
           feature_profiles[feature][:examples] = feature_profiles[feature][:examples].sort_by{|k, v| v[:total_duration]}.reverse
           feature_profiles[feature][:status] = if meta[:examples].all?{|e,m| m[:status] == :passed}
