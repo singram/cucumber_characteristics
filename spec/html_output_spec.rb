@@ -1,23 +1,6 @@
 require 'spec_helper'
 require 'nokogiri'
 
-unless defined?(CHARACTERISTICS_OUTPUT_PATH_PREFIX)
-  CHARACTERISTICS_OUTPUT_PATH_PREFIX = "."
-end
-
-require 'pp'
-
-def read_html_output
-  begin
-    output_file = "#{CHARACTERISTICS_OUTPUT_PATH_PREFIX}/features/characteristics/cucumber_step_characteristics.html"
-    puts "Testing - #{output_file}"
-    File.open(output_file) { |f| Nokogiri::HTML(f) }
-  rescue Errno::ENOENT => e
-    puts "Could not find file '#{output_file}'"
-    exit
-  end
-end
-
 describe "HTML Output" do
 
   before :all do
@@ -69,15 +52,15 @@ describe "HTML Output" do
       context "timing" do
 
         it "fastest ~0.1s" do
-          expect(step.css('.fastest_time').text.strip.to_f).to be_within(0.05).of(0.1)
+          expect(step.css('.fastest_time').text.strip.to_f).to be_within(TIMING_TOLERANCE).of(0.1)
         end
 
         it "slowest ~1s" do
-          expect(step.css('.slowest_time').text.strip.to_f).to be_within(0.05).of(1.0)
+          expect(step.css('.slowest_time').text.strip.to_f).to be_within(TIMING_TOLERANCE).of(1.0)
         end
 
         it "total ~11.9s" do
-          expect(step.css('.total_time').text.strip.to_f).to be_within(0.05).of(11.9)
+          expect(step.css('.total_time').text.strip.to_f).to be_within(TIMING_TOLERANCE*3).of(11.9)
         end
 
       end
@@ -100,7 +83,7 @@ describe "HTML Output" do
 
   end
 
-  describe "feature output" do
+  context "feature output" do
 
     let(:features) { @html_output.css('table#feature_table tr.feature_result') }
 
@@ -124,8 +107,8 @@ describe "HTML Output" do
           expect(feature.css('.step_count').text).to eq '3'
         end
 
-        it "taskes ~1s" do
-          expect(feature.css('.total_time').text.strip.to_f).to be_within(0.05).of(1.0)
+        it "takes ~1s" do
+          expect(feature.css('.total_time').text.strip.to_f).to be_within(TIMING_TOLERANCE).of(1.0)
         end
 
       end
@@ -138,7 +121,7 @@ describe "HTML Output" do
           expect(feature.css('.step_count').text).to eq '1'
         end
 
-        it "taskes ~1s" do
+        it "takes ~1s" do
           expect(feature.css('.total_time').text).to eq '-'
         end
 
@@ -162,8 +145,8 @@ describe "HTML Output" do
           expect(feature.css('.step_count').text).to eq '3'
         end
 
-        it "taskes ~1s" do
-          expect(feature.css('.total_time').text.strip.to_f).to be_within(0.05).of(1.0)
+        it "takes ~1s" do
+          expect(feature.css('.total_time').text.strip.to_f).to be_within(TIMING_TOLERANCE).of(1.0)
         end
 
       end
@@ -188,8 +171,8 @@ describe "HTML Output" do
             expect(feature.css('.step_count').text).to eq '3'
           end
 
-          it "taskes ~1.5s" do
-            expect(feature.css('.total_time').text.strip.to_f).to be_within(0.05).of(1.5)
+          it "takes ~1.5s" do
+            expect(feature.css('.total_time').text.strip.to_f).to be_within(TIMING_TOLERANCE).of(1.5)
           end
 
         end
@@ -202,8 +185,8 @@ describe "HTML Output" do
             expect(feature.css('.step_count').text).to eq '4'
           end
 
-          it "taskes ~1.0s" do
-            expect(feature.css('.total_time').text.strip.to_f).to be_within(0.05).of(1.0)
+          it "takes ~1.0s" do
+            expect(feature.css('.total_time').text.strip.to_f).to be_within(TIMING_TOLERANCE).of(1.0)
           end
 
         end
@@ -216,8 +199,8 @@ describe "HTML Output" do
             expect(feature.css('.step_count').text).to eq '4'
           end
 
-          it "taskes ~2.2s" do
-            expect(feature.css('.total_time').text.strip.to_f).to be_within(0.05).of(2.2)
+          it "takes ~2.2s" do
+            expect(feature.css('.total_time').text.strip.to_f).to be_within(TIMING_TOLERANCE).of(2.2)
           end
 
         end
@@ -234,8 +217,48 @@ describe "HTML Output" do
             expect(feature.css('.step_count').text).to eq '10'
           end
 
-          it "taskes ~3.6s" do
-            expect(feature.css('.total_time').text.strip.to_f).to be_within(0.05).of(3.6)
+          it "takes ~3.6s" do
+            expect(feature.css('.total_time').text.strip.to_f).to be_within(TIMING_TOLERANCE).of(3.6)
+          end
+
+          context "examples" do
+
+            let(:examples) { @html_output.css('table#scenario_outline_with_background_feature_6') }
+
+            {'| 0.5 | 0.6 | 0.7 |'=>{total_time: 2.4, step_count: '5',
+                                     status: 'passed'},
+             '| 0.1 | 0.2 | 0.3 |'=>{total_time: 1.2, step_count: '5',
+                                     status: 'passed'}}.each do |id, details|
+
+              context "example #{id}" do
+                let(:example) { examples.css(".example_result").select{ |tr| tr.css('.example')[0].text == id}.first }
+
+                it "has #{details[:step_count]} steps" do
+                  expect(example.css('.step_count').text).to eq details[:step_count]
+                end
+
+                it "takes #{details[:total_time]}s" do
+                  expect(example.css('.total_time').text.strip.to_f).to be_within(TIMING_TOLERANCE).of(details[:total_time])
+                end
+
+              end
+
+            end
+
+            context "totals" do
+
+              let(:feature_totals) { examples.css('.example_totals').first }
+
+              it "has 10 steps" do
+                expect(feature_totals.css('.step_count').text).to eq '10'
+              end
+
+              it "takes ~3.6s" do
+                expect(feature_totals.css('.total_time').text.strip.to_f).to be_within(TIMING_TOLERANCE).of(3.6)
+              end
+
+            end
+
           end
 
         end
@@ -248,8 +271,48 @@ describe "HTML Output" do
             expect(feature.css('.step_count').text).to eq '8'
           end
 
-          it "taskes ~1.6s" do
-            expect(feature.css('.total_time').text.strip.to_f).to be_within(0.05).of(1.6)
+          it "takes ~1.6s" do
+            expect(feature.css('.total_time').text.strip.to_f).to be_within(TIMING_TOLERANCE).of(1.6)
+          end
+
+          context "examples" do
+
+            let(:examples) { @html_output.css('table#scenario_outline_feature_3') }
+
+            {'| 0.1 | 0.2 | 0.3 |'=>{total_time: 0.8, step_count: '4',
+                                     status: 'passed'},
+             '| 0.3 | 0.2 | 0.1 |'=>{total_time: 0.8, step_count: '4',
+                                     status: 'passed'}}.each do |id, details|
+
+              context "example #{id}" do
+                let(:example) { examples.css(".example_result").select{ |tr| tr.css('.example')[0].text == id}.first }
+
+                it "has #{details[:step_count]} steps" do
+                  expect(example.css('.step_count').text).to eq details[:step_count]
+                end
+
+                it "takes #{details[:total_time]}s" do
+                  expect(example.css('.total_time').text.strip.to_f).to be_within(TIMING_TOLERANCE).of(details[:total_time])
+                end
+
+              end
+
+            end
+
+            context "totals" do
+
+              let(:feature_totals) { examples.css('.example_totals').first }
+
+              it "has 8 steps" do
+                expect(feature_totals.css('.step_count').text).to eq '8'
+              end
+
+              it "takes ~1.6s" do
+                expect(feature_totals.css('.total_time').text.strip.to_f).to be_within(TIMING_TOLERANCE).of(1.6)
+              end
+
+            end
+
           end
 
         end
@@ -258,8 +321,6 @@ describe "HTML Output" do
 
     end
 
-
   end
-
 
 end

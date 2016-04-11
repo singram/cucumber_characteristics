@@ -1,18 +1,10 @@
 require "rake"
 require "bundler/gem_tasks"
 
+# Approach to version testing credited to
+#   https://github.com/makandra/cucumber_factory
 
 namespace :versions do
-
-  # desc "Run specs on all spec apps"
-  # task :spec do
-  #   success = true
-  #   for_each_directory_of('spec/**/Rakefile') do |directory|
-  #     env = "SPEC=../../#{ENV['SPEC']} " if ENV['SPEC']
-  #     success &= system("cd #{directory} && #{env} bundle exec rake spec")
-  #   end
-  #   fail "Tests failed" unless success
-  # end
 
   namespace :bundle do
 
@@ -25,15 +17,6 @@ namespace :versions do
       end
     end
 
-    # desc "Update all gems, or a list of gem given by the GEM environment variable"
-    # task :update do
-    #   for_each_directory_of('spec/**/Gemfile') do |directory|
-    #     Bundler.with_clean_env do
-    #       system("cd #{directory} && bundle update #{ENV['GEM']}")
-    #     end
-    #   end
-    # end
-
   end
 
   desc "Test all supported cucumber versions"
@@ -41,7 +24,6 @@ namespace :versions do
     for_each_directory_of('cucumber_version/**/Gemfile') do |directory|
       Bundler.with_clean_env do
         clean_outputs(directory)
-#        system("cd #{directory} && bundle exec cucumber ../../features/ --format CucumberCharacteristics::Formatter")
         system("cd #{directory} && bundle exec cucumber --color --format progress ../../features/")
         system("bundle exec rspec -r #{directory}/output_path.rb ")
       end

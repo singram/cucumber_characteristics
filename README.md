@@ -130,19 +130,19 @@ As it turns out it was pretty simple to enhance the runtime object to reliably r
 
     bundle install
 
-2. Run formatter over covered cucumber usage scenarios
+2. Run formatter over default cucumber version
 
-    bundle exec cucumber features/ --format CucumberCharacteristics::Formatter
+    bundle exec cucumber
 
 3. Run tests across all supported cucumber versions
 
     bundle exec rake versions:test
 
+* NOTE.  When running the cucumber tests failures, pending etc are expected.  All specs should pass *
+
 ## TODO
 
 - Support Cucumber 2.x
-- Support undefined steps
-- Add multi feature file example
 
 ## Contributing
 

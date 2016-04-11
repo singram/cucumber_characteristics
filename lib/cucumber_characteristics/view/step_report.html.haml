@@ -135,7 +135,7 @@
                   %div.modal-header
                     %h4 #{feature}
                   %div.modal-body
-                    %table.table.table-striped.table-bordered.table-condensed
+                    %table.table.table-striped.table-bordered.table-condensed{:id => feature.split('/').last.gsub(/[\.:]/, '_') }
                       %thead
                         %tr
                           %th Example
@@ -150,11 +150,11 @@
                             %td.step_count #{meta[:step_count]}
                             %td.status #{meta[:status]}
                       %tfooter
-                        %tr
+                        %tr.example_totals
                           %th
-                          %th #{format_ts(meta[:total_duration])}
-                          %th #{meta[:step_count]}
-                          %th #{meta[:status]}
+                          %th.total_time #{format_ts(meta[:total_duration])}
+                          %th.step_count #{meta[:step_count]}
+                          %th.status #{meta[:status]}
                   %div.modal-footer
                     %button.btn.btn-default{:type=>"button", :'data-dismiss'=>"modal"}
                       Close

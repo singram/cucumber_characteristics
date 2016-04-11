@@ -1,5 +1,5 @@
 require 'cucumber_characteristics'
 
 AfterConfiguration do |configuration|
-  configuration.options[:formats] << ['CucumberCharacteristics::Formatter', nil]
+  configuration.formats << ['CucumberCharacteristics::Formatter', nil]
 end

@@ -15,3 +15,22 @@ RSpec.configure do |config|
   #     --seed 1234
   config.order = 'random'
 end
+
+unless defined?(CHARACTERISTICS_OUTPUT_PATH_PREFIX)
+  CHARACTERISTICS_OUTPUT_PATH_PREFIX = "."
+end
+
+TIMING_TOLERANCE = 0.05
+
+require 'pp'
+
+def read_html_output
+  begin
+    output_file = "#{CHARACTERISTICS_OUTPUT_PATH_PREFIX}/features/characteristics/cucumber_step_characteristics.html"
+    puts "Testing - #{output_file}"
+    File.open(output_file) { |f| Nokogiri::HTML(f) }
+  rescue Errno::ENOENT => e
+    puts "Could not find file '#{output_file}'"
+    exit
+  end
+end
