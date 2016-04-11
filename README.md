@@ -138,6 +138,12 @@ As it turns out it was pretty simple to enhance the runtime object to reliably r
 
     bundle exec rake versions:test
 
+## TODO
+
+- Support Cucumber 2.x
+- Support undefined steps
+- Add multi feature file example
+
 ## Contributing
 
 1. Fork it

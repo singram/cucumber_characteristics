@@ -118,12 +118,12 @@
                 %th
             %tbody
               - profile.feature_profiles.each do |feature, meta|
-                %tr{:class => "#{meta[:status] == :failed ? :danger : meta[:status] == :undefined ? :warning : nil }"}
-                  %td #{feature}
-                  %td #{format_ts(meta[:total_duration])}
-                  %td #{meta[:step_count]}
-                  %td #{meta[:status]}
-                  %td
+                %tr.feature_result{:class => "#{meta[:status] == :failed ? :danger : meta[:status] == :undefined ? :warning : nil }"}
+                  %td.feature #{feature}
+                  %td.total_time #{format_ts(meta[:total_duration])}
+                  %td.step_count #{meta[:step_count]}
+                  %td.status #{meta[:status]}
+                  %td.examples
                     - if meta[:examples]
                       %button.btn.btn-primary{:'data-toggle'=>'modal', :'data-target'=>"##{Digest::MD5.hexdigest(feature)}"}
                         #{meta[:example_count]} Examples
@@ -144,11 +144,11 @@
                           %th Status
                       %tbody
                         - meta[:examples].each do |example, meta|
-                          %tr{:class => "#{meta[:status] == :failed ? :danger : meta[:status] == :undefined ? :warning : nil }"}
-                            %td #{example}
-                            %td #{format_ts(meta[:total_duration])}
-                            %td #{meta[:step_count]}
-                            %td #{meta[:status]}
+                          %tr.example_result{:class => "#{meta[:status] == :failed ? :danger : meta[:status] == :undefined ? :warning : nil }"}
+                            %td.example #{example}
+                            %td.total_time #{format_ts(meta[:total_duration])}
+                            %td.step_count #{meta[:step_count]}
+                            %td.status #{meta[:status]}
                       %tfooter
                         %tr
                           %th
