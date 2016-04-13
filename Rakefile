@@ -24,7 +24,7 @@ namespace :versions do
     for_each_directory_of('cucumber_version/**/Gemfile') do |directory|
       Bundler.with_clean_env do
         clean_outputs(directory)
-        system("cd #{directory} && bundle exec cucumber --color --format progress ../../features/")
+        system("cd #{directory} && bundle exec cucumber --color --format progress -g -r ../../features/ ../../features/")
         system("bundle exec rspec -r #{directory}/output_path.rb ")
       end
     end
