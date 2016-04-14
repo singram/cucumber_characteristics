@@ -43,19 +43,29 @@ module CucumberCharacteristics
 
     def feature_id(scenario)
       if outline_feature?(scenario)
-        scenario.location.to_s
+      #        scenario.location.to_s
+        scenario_outline_to_feature_id(scenario)
       else
         scenario.location.to_s
       end
     end
 
     def outline_feature?(scenario)
-      scenario.name =~ /Example (#\d+)/
+      scenario.name =~ /Examples \(#\d+\)$/
+    end
+
+    def outline_step?(step)
+      scenario.name =~ /Examples \(#\d+\)$/
     end
 
     def scenario_from(step)
-      @runtime.scenarios.select{ |s| s.location.file == step.location.file
-      }.select{ |s| s.location.line < step.location.line }.sort{|s| s.location.line}.last
+      if step.step.class == Cucumber::Core::Ast::ExpandedOutlineStep
+        @runtime.scenarios.select{ |s| s.location.file == step.location.file
+        }.select{ |s| s.location.line == step.location.line }.first
+      else
+        @runtime.scenarios.select{ |s| s.location.file == step.location.file
+        }.select{ |s| s.location.line < step.location.line }.sort{ |s| s.location.line }.last
+      end
     end
 
     def background_steps_for(scenario_file)
@@ -74,7 +84,43 @@ module CucumberCharacteristics
       end
     end
 
-    def files_from_scenarios
+    Feature = Struct.new(:name, :line)     #=> Customer
+    def scenario_outlines_from_file(file)
+      count = 1
+      results = []
+      File.open(file).each_line do |li|
+        if (li[/^\s*Scenario Outline:/])
+          results << Feature.new(li, count)
+        end
+        count += 1
+      end
+      results
+    end
+
+    # List of scenario name and lines from file
+    def scenario_outlines(file)
+      @feature_outlines ||= {}
+      return @feature_outlines[file] if @feature_outlines[file]
+      @feature_outlines[file] = scenario_outlines_from_file(file)
+    end
+
+    def scenario_outline_to_feature_id(scenario)
+      scenarios = scenario_outlines(scenario.location.file)
+      scenario_outline = scenarios.select{ |s| s.line < scenario.location.line }.sort(&:line).last
+      "#{scenario.location.file}:#{scenario_outline.line}"
+    end
+
+    # def outline_step_to_feature_id(step)
+    #   scenarios = scenario_outlines(step.location.file)
+    #   scenario = scenarios.select{ |s| s.line < step.locations.line }.sort(&:line).last
+    #   "#{scenario.file}:#{scenario.line}"
+    # end
+
+    # def outline_step_to_example_name(step)
+
+    # end
+
+    def feature_files
       @runtime.scenarios.map{|s| s.location.file}.uniq
     end
 
@@ -87,36 +133,34 @@ module CucumberCharacteristics
 
     def feature_profiles
       feature_profiles = { }
-#      binding.pry
-#      pp @runtime.class
-#      pp @runtime.methods.sort
       if CUCUMBER_VERSION > Gem::Version.new('2.0.0')
-        #puts "XXXXXXXXXXXXX #{f.class} #{f.line}"
-# binding.pry
         assign_steps_to_scenarios
+         binding.pry
         @runtime.results.scenarios.each do |scenario|
           feature_id = feature_id(scenario)
           if outline_feature?(scenario)
+            feature_profiles[feature_id] ||=
+            {name: scenario.name, total_duration: 0, step_count: 0}
+            agg_steps = aggregate_steps(scenario.steps)
+            feature_profiles[feature_id][:total_duration] += agg_steps[:total_duration]
+            feature_profiles[feature_id][:step_count] += agg_steps[:step_count]
+            feature_profiles[feature_id][:status] = scenario.status # TODO aggregate behavior
           else
             feature_profiles[feature_id] = {name: scenario.name, total_duration: 0, step_count: 0}
-            #   feature_profiles[feature_id][:total_duration] = f.steps.select{|s| s.status == :passed}.map{|s| s.step_match.duration}.inject(&:+)
-#            feature_profiles[feature_id][:total_duration] = scenario.steps.map{|s| s.duration.nanoseconds.to_f/1000000000}.inject(&:+)
-#            feature_profiles[feature_id][:step_count] = scenario.steps.count
             feature_profiles[feature_id].merge!(aggregate_steps(scenario.steps))
             feature_profiles[feature_id][:status] = scenario.status
           end
-          files_from_scenarios.each do |file|
+          # Collect up background tasks not directly attributable to
+          # specific scenarios
+        end
+        feature_files.each do |file|
+          steps = background_steps_for(file)
+          unless steps.empty?
             feature_id = "#{file}:0 (Background)"
-            steps = background_steps_for(file)
-            unless steps.empty?
-              feature_profiles[feature_id] = {name: 'Background', total_duration: 0, step_count: 0}
-            #   feature_profiles[feature_id][:total_duration] = f.steps.select{|s| s.status == :passed}.map{|s| s.step_match.duration}.inject(&:+)
-#              feature_profiles[feature_id][:total_duration] = steps.map{|s| s.duration.nanoseconds.to_f/1000000000}.inject(&:+)
-              #              feature_profiles[feature_id][:step_count] = steps.count
-              feature_profiles[feature_id].merge!(aggregate_steps(steps))
-              feature_profiles[feature_id][:status] =
-                steps.map(&:status).uniq.join(',')
-            end
+            feature_profiles[feature_id] = {name: 'Background', total_duration: 0, step_count: 0}
+            feature_profiles[feature_id].merge!(aggregate_steps(steps))
+            feature_profiles[feature_id][:status] =
+              steps.map(&:status).uniq.join(',')
           end
         end
           # if f.is_a?(Cucumber::Ast::OutlineTable::ExampleRow)
