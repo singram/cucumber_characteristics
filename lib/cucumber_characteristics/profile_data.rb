@@ -55,14 +55,16 @@ module CucumberCharacteristics
     end
 
     def outline_step?(step)
-      scenario.name =~ /Examples \(#\d+\)$/
+      step.step.class == Cucumber::Core::Ast::ExpandedOutlineStep
     end
 
     def scenario_from(step)
-      if step.step.class == Cucumber::Core::Ast::ExpandedOutlineStep
+      if outline_step?(step)
+        # Match directly to scenario by line number
         @runtime.scenarios.select{ |s| s.location.file == step.location.file
         }.select{ |s| s.location.line == step.location.line }.first
       else
+        # Match indirectly to preceeding scenario by line number
         @runtime.scenarios.select{ |s| s.location.file == step.location.file
         }.select{ |s| s.location.line < step.location.line }.sort{ |s| s.location.line }.last
       end
@@ -132,27 +134,34 @@ module CucumberCharacteristics
     # ============== CUCUMBER 2.+ =======================
 
     def feature_profiles
+      return @feature_profiles if @feature_profiles
       feature_profiles = { }
       if CUCUMBER_VERSION > Gem::Version.new('2.0.0')
         assign_steps_to_scenarios
-         binding.pry
         @runtime.results.scenarios.each do |scenario|
+          # Feature id outline is the top level feature defintion
+          # aggregating up multiple examples
           feature_id = feature_id(scenario)
           if outline_feature?(scenario)
-            feature_profiles[feature_id] ||=
-            {name: scenario.name, total_duration: 0, step_count: 0}
+            feature_profiles[feature_id] ||= {name: scenario.name, total_duration: 0, step_count: 0, examples: {}}
             agg_steps = aggregate_steps(scenario.steps)
             feature_profiles[feature_id][:total_duration] += agg_steps[:total_duration]
             feature_profiles[feature_id][:step_count] += agg_steps[:step_count]
-            feature_profiles[feature_id][:status] = scenario.status # TODO aggregate behavior
+#            feature_profiles[feature_id][:status] = scenario.status # TODO aggregate behavior
+
+            # First order step associations to scenario examples
+            example_id = scenario_from(scenario.steps.first).name.match(/(Examples.*\))/).captures.first
+            feature_profiles[feature_id][:examples][example_id] = {total_duration: 0, step_count: 0}
+            feature_profiles[feature_id][:examples][example_id] = aggregate_steps(scenario.steps)
+            feature_profiles[feature_id][:examples][example_id][:status] = scenario.status.to_sym
           else
             feature_profiles[feature_id] = {name: scenario.name, total_duration: 0, step_count: 0}
             feature_profiles[feature_id].merge!(aggregate_steps(scenario.steps))
-            feature_profiles[feature_id][:status] = scenario.status
+            feature_profiles[feature_id][:status] = scenario.status.to_sym
           end
-          # Collect up background tasks not directly attributable to
-          # specific scenarios
         end
+        # Collect up background tasks not directly attributable to
+        # specific scenarios
         feature_files.each do |file|
           steps = background_steps_for(file)
           unless steps.empty?
@@ -163,21 +172,6 @@ module CucumberCharacteristics
               steps.map(&:status).uniq.join(',')
           end
         end
-          # if f.is_a?(Cucumber::Ast::OutlineTable::ExampleRow)
-          #   feature_id = f.scenario_outline.file_colon_line
-          #   feature_profiles[feature_id] ||= {name: f.scenario_outline.name, total_duration: 0, step_count: 0, example_count: 0, examples: {} }
-          #   example_id = f.name
-          #   feature_profiles[feature_id][:examples][example_id] ||= {total_duration: 0, step_count: 0}
-          #   feature_profiles[feature_id][:examples][example_id][:total_duration] = f.instance_variable_get(:@step_invocations).select{|s| s.status == :passed}.map{|s| s.step_match.duration}.inject(&:+)
-          #   feature_profiles[feature_id][:examples][example_id][:step_count] = f.instance_variable_get(:@step_invocations).count
-          #   feature_profiles[feature_id][:examples][example_id][:status] = f.status
-          # else
-          #   feature_id = f.file_colon_line
-          #   feature_profiles[feature_id] = {name: f.name, total_duration: 0, step_count: 0}
-          #   feature_profiles[feature_id][:total_duration] = f.steps.select{|s| s.status == :passed}.map{|s| s.step_match.duration}.inject(&:+)
-          #   feature_profiles[feature_id][:step_count] = f.steps.count
-          #   feature_profiles[feature_id][:status] = f.status
-          # end
       else
         @runtime.scenarios.each do |f|
           if f.is_a?(Cucumber::Ast::OutlineTable::ExampleRow)
@@ -197,7 +191,7 @@ module CucumberCharacteristics
           end
         end
       end
-      with_feature_calculations(feature_profiles)
+      @feature_profiles = with_feature_calculations(feature_profiles)
     end
 
     def with_feature_calculations(feature_profiles)
