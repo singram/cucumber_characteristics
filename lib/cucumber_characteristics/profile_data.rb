@@ -112,22 +112,12 @@ module CucumberCharacteristics
       "#{scenario.location.file}:#{scenario_outline.line}"
     end
 
-    # def outline_step_to_feature_id(step)
-    #   scenarios = scenario_outlines(step.location.file)
-    #   scenario = scenarios.select{ |s| s.line < step.locations.line }.sort(&:line).last
-    #   "#{scenario.file}:#{scenario.line}"
-    # end
-
-    # def outline_step_to_example_name(step)
-
-    # end
-
     def feature_files
       @runtime.scenarios.map{|s| s.location.file}.uniq
     end
 
     def aggregate_steps(steps)
-      { total_duration: steps.map{|s| s.duration.nanoseconds.to_f/1000000000}.inject(&:+),
+      { total_duration: steps.reject{|s| [:skipped, :undefined].include?(s.status)}.map{|s| s.duration.nanoseconds.to_f/1000000000}.inject(&:+),
         step_count: steps.count }
     end
 
@@ -147,7 +137,6 @@ module CucumberCharacteristics
             agg_steps = aggregate_steps(scenario.steps)
             feature_profiles[feature_id][:total_duration] += agg_steps[:total_duration]
             feature_profiles[feature_id][:step_count] += agg_steps[:step_count]
-#            feature_profiles[feature_id][:status] = scenario.status # TODO aggregate behavior
 
             # First order step associations to scenario examples
             example_id = scenario_from(scenario.steps.first).name.match(/(Examples.*\))/).captures.first
