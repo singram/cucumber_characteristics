@@ -5,7 +5,7 @@ Gem to profile cucumber steps and features.
 ## Compatibility
 
 + Ruby - 1.9
-+ Cucumber - 1.3.5
++ Cucumber - 1.3.5, 2.3.3
 
 ## High level features
 
@@ -128,21 +128,20 @@ As it turns out it was pretty simple to enhance the runtime object to reliably r
 
 1. Install development environment
 
-    bundle install
+    `bundle install`
 
 2. Run formatter over default cucumber version
 
-    bundle exec cucumber
+    `bundle exec cucumber`
 
 3. Run tests across all supported cucumber versions
 
-    bundle exec rake versions:test
+    `bundle exec rake versions:bundle:install`
+
+    `bundle exec rake versions:test`
 
 * NOTE.  When running the cucumber tests failures, pending etc are expected.  All specs should pass *
 
-## TODO
-
-- Support Cucumber 2.x
 
 ## Contributing
 
@@ -150,7 +149,7 @@ As it turns out it was pretty simple to enhance the runtime object to reliably r
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+5. Create new Pull Request (after running tests!)
 
 ## Credits
 1. Ryan Boucher [cucumber_timing_presenter](https://github.com/distributedlife/cucumber_timing_presenter) for inspiration.

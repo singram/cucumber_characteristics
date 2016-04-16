@@ -1,5 +1,4 @@
 require 'pp'
-require 'pry'
 
 module CucumberCharacteristics
   class ProfileData
@@ -41,7 +40,6 @@ module CucumberCharacteristics
 
     def feature_id(scenario)
       if outline_feature?(scenario)
-        #        scenario.location.to_s
         scenario_outline_to_feature_id(scenario)
       else
         scenario.location.to_s
@@ -56,26 +54,25 @@ module CucumberCharacteristics
       step.step.class == Cucumber::Core::Ast::ExpandedOutlineStep
     end
 
+    def background_step?(step)
+      !step.background.nil?
+    end
+
     def scenario_from(step)
       if outline_step?(step)
         # Match directly to scenario by line number
-        @runtime.scenarios.select do |s|
-          s.location.file == step.location.file
-        end.select { |s| s.location.line == step.location.line }.first
+        @runtime.scenarios.select{ |s|
+          s.location.file == step.location.file && s.location.line == step.location.line }.first
       else
         # Match indirectly to preceeding scenario by line number
-        @runtime.scenarios.select do |s|
-          s.location.file == step.location.file
-        end.select { |s| s.location.line < step.location.line }.sort { |s| s.location.line }.last
+        # (explicit sort needed for ruby 2.x)
+        @runtime.scenarios.select{ |s| s.location.file == step.location.file && s.location.line < step.location.line }.sort{ |a,b| a.location.line <=> b.location.line}.last
       end
     end
 
     def background_steps_for(scenario_file)
-      earliest_scenario = @runtime.scenarios.select { |s| s.location.file == scenario_file }.sort { |s| s.location.line }.first
-      @runtime.steps.select do |s|
-        s.location.file ==
-          scenario_file
-      end.select { |s| s.location.line < earliest_scenario.location.line }
+      @runtime.steps.select{ |s| s.location.file == scenario_file &&
+                             background_step?(s) }
     end
 
     def assign_steps_to_scenarios
@@ -84,6 +81,12 @@ module CucumberCharacteristics
         if scenario
           scenario.steps ||= []
           scenario.steps << step
+        else
+          if !background_step?(step)
+            pp "========== ERROR ==============="
+            pp "Could not match the following step to a scenario"
+            pp step
+          end
         end
       end
     end
@@ -145,8 +148,23 @@ module CucumberCharacteristics
             feature_profiles[feature_id][:examples][example_id][:status] = scenario.status.to_sym
           else
             feature_profiles[feature_id] = { name: scenario.name, total_duration: 0, step_count: 0 }
-            feature_profiles[feature_id].merge!(aggregate_steps(scenario.steps))
             feature_profiles[feature_id][:status] = scenario.status.to_sym
+            begin
+              feature_profiles[feature_id].merge!(aggregate_steps(scenario.steps))
+            rescue
+              pp '============================'
+              pp '-- FEATURE ID --'
+              pp feature_id
+              pp '-- FEATURE_PROFILES[ID] --'
+              pp feature_profiles[feature_id]
+              pp '-- SCENARIO STEPS --'
+              pp scenario.steps
+              pp '-- SCENARIO  --'
+              pp scenario
+              pp '-- STEPS --'
+              pp @runtime.steps.select{ |s| s.location.file == scenario.location.file}
+
+            end
           end
         end
         # Collect up background tasks not directly attributable to

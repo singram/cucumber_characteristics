@@ -8,7 +8,7 @@ namespace :versions do
   namespace :bundle do
     desc 'Bundle all spec apps'
     task :install do
-      for_each_directory_of('cucumber_version/**/Gemfile') do |directory|
+      for_each_directory_of('./cucumber_version/**/Gemfile') do |directory|
         Bundler.with_clean_env do
           system("cd #{directory} && bundle install")
         end
@@ -18,7 +18,7 @@ namespace :versions do
 
   desc 'Test all supported cucumber versions'
   task :test do
-    for_each_directory_of('cucumber_version/**/Gemfile') do |directory|
+    for_each_directory_of('./cucumber_version/**/Gemfile') do |directory|
       Bundler.with_clean_env do
         clean_outputs(directory)
         system("cd #{directory} && bundle exec cucumber --color --format progress -g -r ../../features/ ../../features/")
