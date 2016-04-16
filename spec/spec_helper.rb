@@ -20,6 +20,13 @@ unless defined?(CHARACTERISTICS_OUTPUT_PATH_PREFIX)
   CHARACTERISTICS_OUTPUT_PATH_PREFIX = "."
 end
 
+if defined?(Cucumber)
+  CUCUMBER_VERSION = Cucumber::Version.to_s
+else
+  CUCUMBER_VERSION = CHARACTERISTICS_OUTPUT_PATH_PREFIX.split('/').last
+end
+
+
 TIMING_TOLERANCE = 0.05
 
 require 'pp'
