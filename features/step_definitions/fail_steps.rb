@@ -1,3 +1,3 @@
 Given(/^I fail$/) do
-  fail "Expected step failure"
+  raise 'Expected step failure'
 end

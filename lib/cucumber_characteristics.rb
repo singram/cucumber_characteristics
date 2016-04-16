@@ -1,8 +1,8 @@
-require "cucumber_characteristics/configuration"
-require "cucumber_characteristics/cucumber_step_patch"
-require "cucumber_characteristics/exporter"
-require "cucumber_characteristics/formatter"
-require "cucumber_characteristics/profile_data"
+require 'cucumber_characteristics/configuration'
+require 'cucumber_characteristics/cucumber_step_patch'
+require 'cucumber_characteristics/exporter'
+require 'cucumber_characteristics/formatter'
+require 'cucumber_characteristics/profile_data'
 
 module CucumberCharacteristics
   class << self

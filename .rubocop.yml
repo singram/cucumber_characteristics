@@ -1,0 +1,14 @@
+Metrics/LineLength:
+  Max: 207
+
+# Offense count: 9
+Style/Documentation:
+  Exclude:
+    - 'spec/**/*'
+    - 'test/**/*'
+    - 'lib/cucumber_characteristics.rb'
+    - 'lib/cucumber_characteristics/configuration.rb'
+    - 'lib/cucumber_characteristics/cucumber_step_patch.rb'
+    - 'lib/cucumber_characteristics/exporter.rb'
+    - 'lib/cucumber_characteristics/formatter.rb'
+    - 'lib/cucumber_characteristics/profile_data.rb'

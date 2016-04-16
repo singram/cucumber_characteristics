@@ -1,7 +1,5 @@
 module CucumberCharacteristics
-
   class Formatter
-
     def initialize(runtime, io, options)
       @runtime = runtime
       @io = io
@@ -13,8 +11,5 @@ module CucumberCharacteristics
       profile = ProfileData.new(@runtime, features)
       Exporter.new(profile).export
     end
-
   end
-
-
 end
