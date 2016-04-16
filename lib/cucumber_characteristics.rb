@@ -1,5 +1,6 @@
 require 'cucumber_characteristics/configuration'
-require 'cucumber_characteristics/cucumber_step_patch'
+require 'cucumber_characteristics/cucumber_1x_step_patch'
+require 'cucumber_characteristics/cucumber_2x_step_patch'
 require 'cucumber_characteristics/exporter'
 require 'cucumber_characteristics/formatter'
 require 'cucumber_characteristics/profile_data'
