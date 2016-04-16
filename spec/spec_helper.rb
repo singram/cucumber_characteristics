@@ -17,7 +17,7 @@ RSpec.configure do |config|
 end
 
 unless defined?(CHARACTERISTICS_OUTPUT_PATH_PREFIX)
-  CHARACTERISTICS_OUTPUT_PATH_PREFIX = "."
+  CHARACTERISTICS_OUTPUT_PATH_PREFIX = '.'.freeze
 end
 
 if defined?(Cucumber)
@@ -26,18 +26,15 @@ else
   CUCUMBER_VERSION = CHARACTERISTICS_OUTPUT_PATH_PREFIX.split('/').last
 end
 
-
 TIMING_TOLERANCE = 0.05
 
 require 'pp'
 
 def read_html_output
-  begin
-    output_file = "#{CHARACTERISTICS_OUTPUT_PATH_PREFIX}/features/characteristics/cucumber_step_characteristics.html"
-    puts "Testing - #{output_file}"
-    File.open(output_file) { |f| Nokogiri::HTML(f) }
-  rescue Errno::ENOENT => e
-    puts "Could not find file '#{output_file}'"
-    exit
-  end
+  output_file = "#{CHARACTERISTICS_OUTPUT_PATH_PREFIX}/features/characteristics/cucumber_step_characteristics.html"
+  puts "Testing - #{output_file}"
+  File.open(output_file) { |f| Nokogiri::HTML(f) }
+rescue Errno::ENOENT
+  puts "Could not find file '#{output_file}'"
+  exit
 end

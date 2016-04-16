@@ -1,21 +1,20 @@
-#http://stackoverflow.com/questions/4470108/when-monkey-patching-a-method-can-you-call-the-overridden-method-from-the-new-i
+# http://stackoverflow.com/questions/4470108/when-monkey-patching-a-method-can-you-call-the-overridden-method-from-the-new-i
 
 module Cucumber
   class StepMatch
-    if self.method_defined?(:invoke)
+    if method_defined?(:invoke)
       old_invoke = instance_method(:invoke)
       attr_reader :duration
 
-      define_method(:invoke) do | multiline_arg |
+      define_method(:invoke) do |multiline_arg|
         start_time = Time.now
-        ret = old_invoke.bind(self).(multiline_arg)
+        ret = old_invoke.bind(self).call(multiline_arg)
         @duration = Time.now - start_time
         ret
       end
     end
   end
 end
-
 
 module Cucumber
   module Ast
@@ -29,7 +28,7 @@ end
 
 module Cucumber
   class StepDefinitionLight
-    unless self.method_defined?(:file_colon_line)
+    unless method_defined?(:file_colon_line)
       def file_colon_line
         location.file_colon_line
       end
@@ -41,7 +40,7 @@ module Cucumber
       module Location
         #  Cucumber::Core::Ast::Location::Precise
         class Precise
-          unless self.method_defined?(:file_colon_line)
+          unless method_defined?(:file_colon_line)
             def file_colon_line
               to_s
             end
@@ -60,6 +59,4 @@ module Cucumber
       end
     end
   end
-
-
 end

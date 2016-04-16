@@ -2,4 +2,4 @@ source 'http://rubygems.org'
 
 gem 'cucumber', '1.3.5'
 gem 'pry'
-gem 'cucumber_characteristics', :path => '../..'
+gem 'cucumber_characteristics', path: '../..'

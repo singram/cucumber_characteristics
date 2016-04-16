@@ -2,9 +2,7 @@ require 'haml'
 require 'digest/md5'
 
 module CucumberCharacteristics
-
   class Exporter
-
     attr_reader :profile
     def initialize(profile)
       @profile = profile
@@ -14,11 +12,11 @@ module CucumberCharacteristics
     def export
       filename = @config.full_target_filename
       if @config.export_html
-        File.open(filename+'.html', 'w') { |file| file.write(to_html) }
+        File.open(filename + '.html', 'w') { |file| file.write(to_html) }
         puts "Step characteristics report written to #{filename}.html"
       end
       if @config.export_json
-        File.open(filename+'.json', 'w') { |file| file.write(to_json) }
+        File.open(filename + '.json', 'w') { |file| file.write(to_json) }
         puts "Step characteristics report written to #{filename}.json"
       end
     end
@@ -36,20 +34,18 @@ module CucumberCharacteristics
     # HELPERS
 
     def format_ts(t)
-      t ? sprintf("%0.#{@config.precision}f", t) : '-'
+      t ? format("%0.#{@config.precision}f", t) : '-'
     end
 
     def format_step_usage(step_feature_data)
       step_feature_data[:feature_location].map do |location, timings|
-        "#{location}" + (timings.count > 1 ? " (x#{timings.count})" : '')
+        location.to_s + (timings.count > 1 ? " (x#{timings.count})" : '')
       end.join("\n")
     end
 
     def step_status_summary(profile)
       status = profile.step_count_by_status
-      status.keys.sort.map{|s| status[s]> 0 ? "#{s.capitalize}: #{status[s]}" : nil}.compact.join(', ')
+      status.keys.sort.map { |s| status[s] > 0 ? "#{s.capitalize}: #{status[s]}" : nil }.compact.join(', ')
     end
-
-   end
-
+  end
 end
