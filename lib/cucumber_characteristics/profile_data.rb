@@ -40,7 +40,6 @@ module CucumberCharacteristics
 
     def feature_id(scenario)
       if outline_feature?(scenario)
-        #        scenario.location.to_s
         scenario_outline_to_feature_id(scenario)
       else
         scenario.location.to_s
@@ -66,8 +65,8 @@ module CucumberCharacteristics
           s.location.file == step.location.file && s.location.line == step.location.line }.first
       else
         # Match indirectly to preceeding scenario by line number
-        @runtime.scenarios.select{ |s|
-          s.location.file == step.location.file && s.location.line < step.location.line }.sort{ |s| s.location.line }.last
+        # (explicit sort needed for ruby 2.x)
+        @runtime.scenarios.select{ |s| s.location.file == step.location.file && s.location.line < step.location.line }.sort{ |a,b| a.location.line <=> b.location.line}.last
       end
     end
 
@@ -153,7 +152,6 @@ module CucumberCharacteristics
             begin
               feature_profiles[feature_id].merge!(aggregate_steps(scenario.steps))
             rescue
-              require 'pp'
               pp '============================'
               pp '-- FEATURE ID --'
               pp feature_id
