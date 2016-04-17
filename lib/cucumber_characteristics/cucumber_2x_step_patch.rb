@@ -36,7 +36,7 @@ module Cucumber
           feature_profiles = {}
 
           assign_steps_to_scenarios!
-          self.results.scenarios.each do |scenario|
+          results.scenarios.each do |scenario|
             # Feature id outline is the top level feature defintion
             # aggregating up multiple examples
             feature_id = feature_id(scenario)
@@ -97,22 +97,25 @@ module Cucumber
         def scenario_from(step)
           if outline_step?(step)
             # Match directly to scenario by line number
-            self.scenarios.select{ |s|
-              s.location.file == step.location.file && s.location.line == step.location.line }.first
+            scenarios.select do |s|
+              s.location.file == step.location.file && s.location.line == step.location.line
+            end.first
           else
             # Match indirectly to preceeding scenario by line number
             # (explicit sort needed for ruby 2.x)
-            self.scenarios.select{ |s| s.location.file == step.location.file && s.location.line < step.location.line }.sort{ |a,b| a.location.line <=> b.location.line}.last
+            scenarios.select { |s| s.location.file == step.location.file && s.location.line < step.location.line }.sort { |a, b| a.location.line <=> b.location.line }.last
           end
         end
 
         def background_steps_for(scenario_file)
-          self.steps.select{ |s| s.location.file == scenario_file &&
-                                 background_step?(s) }
+          steps.select do |s|
+            s.location.file == scenario_file &&
+              background_step?(s)
+          end
         end
 
         def assign_steps_to_scenarios!
-          self.steps.each do |step|
+          steps.each do |step|
             scenario = scenario_from(step)
             if scenario
               scenario.steps ||= []
@@ -141,24 +144,20 @@ module Cucumber
 
         def scenario_outline_to_feature_id(scenario)
           scenarios = scenario_outlines(scenario.location.file)
-          scenario_outline = scenarios.select { |s| s.line < scenario.location.line }.sort(&:line).last
+          scenario_outline = scenarios.select { |s| s.line < scenario.location.line }
+          scenario_outline = scenario_outline.sort { |a, b| a.line <=> b.line }.last
           "#{scenario.location.file}:#{scenario_outline.line}"
         end
 
         def feature_files
-          self.scenarios.map { |s| s.location.file }.uniq
+          scenarios.map { |s| s.location.file }.uniq
         end
 
         def aggregate_steps(steps)
           { total_duration: steps.reject { |s| [:skipped, :undefined].include?(s.status) }.map { |s| s.duration.nanoseconds.to_f / 1_000_000_000 }.inject(&:+),
             step_count: steps.count }
         end
-
-
       end
     end
   end
-
-
-
 end
