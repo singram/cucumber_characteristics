@@ -55,26 +55,25 @@ module CucumberCharacteristics
       step.step.class == Cucumber::Core::Ast::ExpandedOutlineStep
     end
 
+    def background_step?(step)
+      !step.background.nil?
+    end
+
     def scenario_from(step)
       if outline_step?(step)
         # Match directly to scenario by line number
-        @runtime.scenarios.select do |s|
-          s.location.file == step.location.file
-        end.select { |s| s.location.line == step.location.line }.first
+        @runtime.scenarios.select{ |s|
+          s.location.file == step.location.file && s.location.line == step.location.line }.first
       else
         # Match indirectly to preceeding scenario by line number
-        @runtime.scenarios.select do |s|
-          s.location.file == step.location.file
-        end.select { |s| s.location.line < step.location.line }.sort { |s| s.location.line }.last
+        @runtime.scenarios.select{ |s|
+          s.location.file == step.location.file && s.location.line < step.location.line }.sort{ |s| s.location.line }.last
       end
     end
 
     def background_steps_for(scenario_file)
-      earliest_scenario = @runtime.scenarios.select { |s| s.location.file == scenario_file }.sort { |s| s.location.line }.first
-      @runtime.steps.select do |s|
-        s.location.file ==
-          scenario_file
-      end.select { |s| s.location.line < earliest_scenario.location.line }
+      @runtime.steps.select{ |s| s.location.file == scenario_file &&
+                             background_step?(s) }
     end
 
     def assign_steps_to_scenarios
@@ -83,6 +82,12 @@ module CucumberCharacteristics
         if scenario
           scenario.steps ||= []
           scenario.steps << step
+        else
+          if !background_step?(step)
+            pp "========== ERROR ==============="
+            pp "Could not match the following step to a scenario"
+            pp step
+          end
         end
       end
     end
