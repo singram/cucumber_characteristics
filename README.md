@@ -155,3 +155,4 @@ As it turns out it was pretty simple to enhance the runtime object to reliably r
 1. Ryan Boucher [cucumber_timing_presenter](https://github.com/distributedlife/cucumber_timing_presenter) for inspiration.
 2. AlienFast [cucumber_statistics](https://github.com/alienfast/cucumber_statistics) for inspriation.
 3. [Brandon Hilker](http://brandonhilkert.com/blog/ruby-gem-configuration-patterns/) for gem building tutorials
+4. Nathan Menge for helping QA the ruby 2.3.0 / cucumber 2.3.0 updates
