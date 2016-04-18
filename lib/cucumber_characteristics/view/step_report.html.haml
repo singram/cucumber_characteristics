@@ -108,7 +108,7 @@
                   %td.total_count #{meta[:total_count]}
 
         %div.tab-pane#features
-          %table.table.table-striped.table-bordered.table-condensed#feature_table
+          %table.table.table-striped.table-bordered.table-condensed.tablesorter#feature_table
             %thead
               %tr
                 %th Feature
@@ -179,5 +179,7 @@
       $(document).ready(function()
       {
           $("#profile_table").tablesorter( {sortList: [[1,1],[3,1]], widgets: ['zebra']} );
+          $("#feature_table").tablesorter( {sortList: [[3,0],[1,1]], widgets: ['zebra']} );
+          $("#unmatched_steps_table").tablesorter( {sortList: [[1,0]], widgets: ['zebra']} );
       }
       );
