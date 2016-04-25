@@ -11,8 +11,8 @@ Gem to profile cucumber steps and features.
 
 Step analysis including
 + Location of step in steps file & regex
-+ Step usage location and number of times executed (background/outline etc)
-+ Counts for success/failure/pending/etc
++ Step usage location and number of times executed (background/outline, etc.)
++ Counts for success/failure/pending/etc.
 + Total time taken in test run
 + Average, fastest, slowest times per step
 + Variation, variance & standard deviation calculations
@@ -20,9 +20,9 @@ Step analysis including
 Feature analysis including
 + Feature location
 + Time taken to run feature
-+ Result of feature test (pass, fail etc)
++ Result of feature test (pass, fail, etc.)
 + Number of steps run
-+ Breakdown of feature by individual example run if a secario outline
++ Breakdown of feature by individual example run if a scenario outline
 
 Other features.
 + Reporting of ambiguous step calls
@@ -118,13 +118,13 @@ This is why when you use the 'progress' formatter you would get 4 'skipped' for 
 
 Possible solutions
 
-1. Introduce new hook point for all true step invokations irregardless of context.
+1. Introduce new hook point for all true step invocations regardless of context.
 2. Adjust table_cell hooks to include 'null' cells when considering steps without definitions.
 3. Include profile information in runtime master object to parse out at end.
 
 As it turns out it was pretty simple to enhance the runtime object to reliably return profile information.
 
-## Developement
+## Development
 
 1. Install development environment
 
@@ -153,6 +153,6 @@ As it turns out it was pretty simple to enhance the runtime object to reliably r
 
 ## Credits
 1. Ryan Boucher [cucumber_timing_presenter](https://github.com/distributedlife/cucumber_timing_presenter) for inspiration.
-2. AlienFast [cucumber_statistics](https://github.com/alienfast/cucumber_statistics) for inspriation.
+2. AlienFast [cucumber_statistics](https://github.com/alienfast/cucumber_statistics) for inspiration.
 3. [Brandon Hilker](http://brandonhilkert.com/blog/ruby-gem-configuration-patterns/) for gem building tutorials
 4. Nathan Menge for helping QA the ruby 2.3.0 / cucumber 2.3.0 updates
