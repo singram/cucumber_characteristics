@@ -5,7 +5,7 @@ Gem to profile cucumber steps and features.
 ## Compatibility
 
 + (J)Ruby - 1.9.3 -> 2.3.0
-+ Cucumber - 1.3.5, 2.1.x+
++ Cucumber - 1.3.5, 2.4.x+
 
 ## High level features
 
